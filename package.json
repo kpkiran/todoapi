@@ -1,0 +1,24 @@
+{
+  "name": "todoapi",
+  "version": "1.0.0",
+  "description": "todo list using rest api",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "todolist",
+    "rest",
+    "api"
+  ],
+  "author": "ravikiran padki",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "ejs": "^2.5.5",
+    "express": "^4.14.0",
+    "express-validator": "^3.1.1",
+    "mongodb": "^2.2.16",
+    "mongoose": "^4.7.4"
+  }
+}
