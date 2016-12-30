@@ -9,4 +9,4 @@ var todoschema = new Schema({
     status          : String
 });
 
-module.exports = mongoose.model('ToDo', todoschema);
+module.exports = mongoose.model('todos', todoschema);
