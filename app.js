@@ -1,23 +1,23 @@
-var express             = require('express');
-var mongoose            = require('mongoose');
-var mongo               = require('mongodb');
-var TodoList            = require('./model/modelToDo');
-var bodyParser          = require('body-parser');
-var expressValidator    = require('express-validator');
+var express = require('express');
+var mongoose = require('mongoose');
+var mongo = require('mongodb');
+var TodoList = require('./model/modelToDo');
+var bodyParser = require('body-parser');
+var expressValidator = require('express-validator');
 
 var app = express();
 
 app.set('view engine', 'ejs');
 
 
-var urlencodedParser = bodyParser.urlencoded({extended: true});
+var urlencodedParser = bodyParser.urlencoded({ extended: true });
 app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressValidator());
 
 var url = mongoose.connect('mongodb://localhost/TodoDb');
 
-app.get('/todo', function(req, res){
+app.get('/todo', function(req, res) {
     res.render('index');
 });
 
@@ -33,7 +33,7 @@ app.get('/todo', function(req, res){
 //     });
 // });
 
-app.post('/todo', urlencodedParser, function (req, res) {
+app.post('/todo', urlencodedParser, function(req, res) {
 
     req.checkBody("date", "Enter a valid date").isDate();
     req.checkBody("activity", "Enter a valid activity").isAlpha().isLowercase();
@@ -49,7 +49,7 @@ app.post('/todo', urlencodedParser, function (req, res) {
     } else {
         var todo = new TodoList(req.body);
         console.log(todo);
-        todo.save(function (err) {
+        todo.save(function(err) {
             if (err) {
                 res.send(err);
             } else {
@@ -60,22 +60,29 @@ app.post('/todo', urlencodedParser, function (req, res) {
     }
 });
 
-app.get('/tododetails', function(req, res){
-    res.render('displaydetails', {data:true});
+app.get('/tododetails', function(req, res) {
+    res.render('displaydetails', { data: true });
 });
 
-app.post('/tododetails', urlencodedParser, function(req, res){
+app.post('/tododetails', urlencodedParser, function(req, res) {
     var query = {};
-    if(req.body){
-        query.id = req.body.textInput;
-        console.log(query);
+
+    req.checkBody('idInput', 'ID cannot be empty').notEmpty();
+    if (req.body) {
+        query.id = req.body.idInput;
     }
-    
-    TodoList.find({"_id": query.id},function(err, data){
-        console.log(data);
-        if(err) throw err;
-        res.render('displaydetails', {data: data});
-    });
+
+    var errors = req.validationErrors();
+    if (errors) {
+        res.send(errors);
+        return;
+    } else {
+        TodoList.find({ "_id": query.id }, function(err, data) {
+            console.log(data);
+            if (err) throw err;
+            res.render('displaydetails', { data: data });
+        });
+    }
 });
 
 // app.delete('/todo', function(req, res){

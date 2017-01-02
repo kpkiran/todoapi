@@ -6,18 +6,21 @@
     <form id="display-form" method="POST" action="/tododetails">
         <h3>Your login details are as below</h3>
         <label>Enter Id: </label>
-        <input type = "text" id = "myText" name="textInput"/>
+        <input type = "text" id = "myText" name="idInput"/>
         <input type="submit" value="Submit">
         
-        
-        <p><strong>Date: </strong><% data.date %></p>
-        <p><strong>Activity: </strong><%= data.activity %></p>
-        <p><strong>First Name: </strong><%= data.fname %></p>
-        <p><strong>Last Name: </strong><%= data.lname %></p>
-        <p><strong>Status: </strong><%= data.status %></p>
-        
+        <% if(Array.isArray(data)) { %>
+            <% data.forEach(function(data) { %>
+                <p><strong>Date: </strong><%= data.date %></p>
+                <p><strong>Activity: </strong><%= data.activity %></p>
+                <p><strong>First Name: </strong><%= data.fname %></p>
+                <p><strong>Last Name: </strong><%= data.lname %></p>
+                <p><strong>Status: </strong><%= data.status %></p>
+            <% }) %>
+        <% } %>
        
     </form>
+
 </body>
 
 </html>
