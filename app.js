@@ -7,17 +7,20 @@ var expressValidator = require('express-validator');
 
 var app = express();
 
+//Set the view engine
 app.set('view engine', 'ejs');
 
-
+// Implementing body parser
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: true}));
+
+// Implementing express validator
 app.use(expressValidator());
 
+// Connecting to the database
 var url = mongoose.connect('mongodb://localhost/TodoDb');
 
-app.get('/todo', function(req, res) {
+app.get('/todo', function (req, res) {
     res.render('index');
 });
 
@@ -33,7 +36,9 @@ app.get('/todo', function(req, res) {
 //     });
 // });
 
-app.post('/todo', urlencodedParser, function(req, res) {
+
+// Posting data to the database
+app.post('/todo', urlencodedParser, function (req, res) {
 
     req.checkBody("date", "Enter a valid date").isDate();
     req.checkBody("activity", "Enter a valid activity").isAlpha().isLowercase();
@@ -49,7 +54,7 @@ app.post('/todo', urlencodedParser, function(req, res) {
     } else {
         var todo = new TodoList(req.body);
         console.log(todo);
-        todo.save(function(err) {
+        todo.save(function (err) {
             if (err) {
                 res.send(err);
             } else {
@@ -60,11 +65,11 @@ app.post('/todo', urlencodedParser, function(req, res) {
     }
 });
 
-app.get('/tododetails', function(req, res) {
+app.get('/tododetails', function (req, res) {
     res.render('displaydetails', { data: true });
 });
 
-app.post('/tododetails', urlencodedParser, function(req, res) {
+app.post('/tododetails', urlencodedParser, function (req, res) {
     var query = {};
 
     req.checkBody('idInput', 'ID cannot be empty').notEmpty();
@@ -77,7 +82,7 @@ app.post('/tododetails', urlencodedParser, function(req, res) {
         res.send(errors);
         return;
     } else {
-        TodoList.find({ "_id": query.id }, function(err, data) {
+        TodoList.find({ "_id": query.id }, function (err, data) {
             console.log(data);
             if (err) throw err;
             res.render('displaydetails', { data: data });
@@ -85,15 +90,15 @@ app.post('/tododetails', urlencodedParser, function(req, res) {
     }
 });
 
-// app.delete('/todo', function(req, res){
-//     TodoList.findById(req.body._id, function(err, todolists){
-//         TodoList.remove(function(err){
-//             if(!err){
-//                 res.status(204);
-//                 res.send('Removed');
-//             }
-//         });
-//     });
-// });
+app.delete('/delete', function (req, res) {
+    TodoList.findById(req.body.id, function (err, data) {
+        data.remove(function (err) {
+            if (!err) {
+                res.status(200);
+                res.send('Removed');
+            }
+        });
+    });
+});
 
 app.listen(3000);
